@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Task;
+use App\Models\Todo;
 
-class TaskController extends Controller
+class TodoController extends Controller
 {
-    public function saveTask(Request $request)
+    public function saveTodo(Request $request)
     {
         $validator = Validator::make(
             $request->all(),
@@ -23,7 +23,7 @@ class TaskController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         } else {
-            $ifExists = Task::where('name', $request->input('name'))->first();
+            $ifExists = Todo::where('name', $request->input('name'))->first();
             if ($ifExists) :
                 return response()->json([
                     'status' => 'error',
@@ -31,25 +31,24 @@ class TaskController extends Controller
                     'errors' => array('Already Saved!'),
                 ], 422);
             else :
-                $tasks = new Task;
-                $tasks->fk_todo_id = $request->input('fk_todo_id');
-                $tasks->name = $request->input('name');
-                return $tasks->save();
+                $todos = new Todo;
+                $todos->name = $request->input('name');
+                return $todos->save();
             endif;
         }
     }
 
-    public function manageTask()
+    public function manageTodo()
     {
-        return Task::orderByDesc('id')->get();
+        return Todo::orderByDesc('id')->get();
     }
 
-    public function selectTask($id)
+    public function selectTodo($id)
     {
-        return Task::find($id);
+        return Todo::find($id);
     }
 
-    public function updateTask(Request $request)
+    public function updateTodo(Request $request)
     {
         $validator = Validator::make(
             $request->all(),
@@ -64,7 +63,7 @@ class TaskController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         } else {
-            $ifExists = Task::where('name', $request->input('name'))->where('id', '!=', $request->input('id'))->first();
+            $ifExists = Todo::where('name', $request->input('name'))->where('id', '!=', $request->input('id'))->first();
             if ($ifExists) :
                 return response()->json([
                     'status' => 'error',
@@ -72,26 +71,25 @@ class TaskController extends Controller
                     'errors' => array('Already Saved!'),
                 ], 422);
             else :
-                $tasks = Task::find($request->input('id'));
-                $tasks->fk_todo_id = $request->input('fk_todo_id');
-                $tasks->name = $request->input('name');
-                return $tasks->save();
+                $todos = Todo::find($request->input('id'));
+                $todos->name = $request->input('name');
+                return $todos->save();
             endif;
         }
     }
 
-    public function deleteTask($id)
+    public function deleteTodo($id)
     {
-        $ifExists = Task::where('id', $id)->first();
+        $ifExists = Todo::where('id', $id)->first();
         if ($ifExists) :
-            Task::where('id', $id)->delete();
+            Todo::where('id', $id)->delete();
             return response()->json([
                 'msg'    => 'Deleted',
             ], 200);
         else :
             return response()->json([
                 'status' => 'error',
-                'msg'    => 'Invalid task',
+                'msg'    => 'Invalid todo',
             ], 422);
         endif;
     }
