@@ -33,6 +33,7 @@ class TodoController extends Controller
             else :
                 $todos = new Todo;
                 $todos->name = $request->input('name');
+                $todos->created_by = auth()->user()->id;
                 return $todos->save();
             endif;
         }
@@ -89,7 +90,7 @@ class TodoController extends Controller
         else :
             return response()->json([
                 'status' => 'error',
-                'msg'    => 'Invalid todo',
+                'msg'    => 'Invalid Todo',
             ], 422);
         endif;
     }

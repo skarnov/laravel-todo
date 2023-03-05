@@ -34,6 +34,7 @@ class TaskController extends Controller
                 $tasks = new Task;
                 $tasks->fk_todo_id = $request->input('fk_todo_id');
                 $tasks->name = $request->input('name');
+                $tasks->created_by = auth()->user()->id;
                 return $tasks->save();
             endif;
         }
@@ -41,7 +42,11 @@ class TaskController extends Controller
 
     public function manageTask()
     {
-        return Task::orderByDesc('id')->get();
+        return Task::leftJoin('todos', 'todos.id', '=', 'tasks.fk_todo_id')
+            ->leftJoin('users', 'users.id', '=', 'tasks.created_by')
+            ->select('tasks.id', 'tasks.name AS task_name', 'users.name AS user_name')
+            ->orderByDesc('tasks.id')
+            ->get();
     }
 
     public function selectTask($id)

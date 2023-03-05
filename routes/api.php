@@ -1,10 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TodoController;
-use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +16,8 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::post('registration', [Login::class, 'registration']);
-Route::post('login', [Login::class, 'login']);
+Route::post('registration', [LoginController::class, 'registration']);
+Route::post('login', [LoginController::class, 'login']);
 
 Route::controller(AuthController::class)->middleware("auth:api")->group(function () {
     Route::post('logout', 'logout');
@@ -35,10 +34,4 @@ Route::controller(AuthController::class)->middleware("auth:api")->group(function
     Route::post('selectTodo/{id}', [TodoController::class, 'selectTodo']);
     Route::post('updateTodo', [TodoController::class, 'updateTodo']);
     Route::post('deleteTodo/{id}', [TodoController::class, 'deleteTodo']);
-
-    Route::post('saveUser', [UserController::class, 'saveUser']);
-    Route::post('manageUser', [UserController::class, 'manageUser']);
-    Route::post('selectUser/{id}', [UserController::class, 'selectUser']);
-    Route::post('updateUser', [UserController::class, 'updateUser']);
-    Route::post('deleteUser/{id}', [UserController::class, 'deleteUser']);
 });
